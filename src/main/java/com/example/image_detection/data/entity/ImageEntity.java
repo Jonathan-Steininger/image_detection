@@ -16,19 +16,19 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TypeDef(name = "string-array", typeClass = StringArrayType.class)
+//@TypeDef(name = "string-array", typeClass = StringArrayType.class)
 public class ImageEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "label")
     private String label;
 
-    @Type(type = "string-array")
-    @Column(name = "objects", columnDefinition = "text[]")
-    private String[] objects;
+//    @Type(type = "string-array")
+//    @Column(name = "objects", columnDefinition = "text[]")
+//    private String[] objects;
 
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")

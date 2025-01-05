@@ -10,7 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -18,31 +21,32 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ImageService {
     private final ImageRepository imageRepository;
+    private final ObjectService objectService;
 
-    public ImageEntity processImageUploadRequest(UploadRequest uploadRequest) {
-        if (uploadRequest == null) return null;
-        if (Strings.isBlank(uploadRequest.getImage())) return null;
-
-        Image image = ImageUtility.getImageFromSource(uploadRequest.getImage());
+    @Transactional
+    public ImageEntity upload(Image image, UploadRequest uploadRequest) {
         ImageEntity imageEntity = mapToEntity(image, uploadRequest);
         saveImage(imageEntity);
-        try {
-            DetectLabelsGcs.detectLabels(image, uploadRequest.getEnableObjectDetection());
-        } catch (IOException e) {
-            log.error(e.getMessage()); // todo handle better
-        }
         return imageEntity;
     }
+
+    public ImageEntity processGetImageWithImageIdRequest(Long imageId) {
+        if (imageId == null) return null;
+        return imageRepository.findById(imageId).orElse(null); // todo should convert to a response object
+    }
+
+
 
     private ImageEntity mapToEntity(Image image, UploadRequest uploadRequest) {
         if (image == null) return null;
         if (image.getContent() == null || image.getContent().isEmpty()) return null;
         String label = Strings.isBlank(uploadRequest.getLabel()) ? UUID.randomUUID().toString() : uploadRequest.getLabel();
 
-        return ImageEntity.builder()
-                .label(label)
-                .imageBytes(image.getContent().toByteArray())
-                .build();
+        ImageEntity imageEntity = new ImageEntity();
+        imageEntity.setLabel(label);
+        imageEntity.setImageBytes(image.getContent().toByteArray());
+
+        return imageEntity;
     }
 
     private void saveImage(ImageEntity imageEntity) {

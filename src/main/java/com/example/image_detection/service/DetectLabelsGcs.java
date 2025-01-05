@@ -20,9 +20,9 @@ import java.util.List;
 
 public class DetectLabelsGcs {
 
-    public static void detectLabels(Image image, Boolean enableObjectDetection) throws IOException {
-        if (enableObjectDetection == null || Boolean.FALSE.equals(enableObjectDetection)) return;
-        if (image == null) return;
+    public static List<String> detectLabels(Image image, Boolean enableObjectDetection) throws IOException {
+        if (enableObjectDetection == null || Boolean.FALSE.equals(enableObjectDetection)) return null;
+        if (image == null) return null;
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -34,6 +34,7 @@ public class DetectLabelsGcs {
         // Initialize client that will be used to send requests. This client only needs to be created
         // once, and can be reused for multiple requests. After completing all of your requests, call
         // the "close" method on the client to safely clean up any remaining background resources.
+        List<String> objects = new ArrayList<>(10); // default number of objects returned by the google api
         try (ImageAnnotatorClient client = ImageAnnotatorClient.create()) {
             BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
             List<AnnotateImageResponse> responses = response.getResponsesList();
@@ -41,11 +42,13 @@ public class DetectLabelsGcs {
             for (AnnotateImageResponse res : responses) {
                 if (res.hasError()) {
                     System.out.format("Error: %s%n", res.getError().getMessage());
-                    return;
+                    return null;
                 }
+
 
                 // For full list of available annotations, see http://g.co/cloud/vision/docs
                 for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
+                    objects.add(annotation.getDescription().toLowerCase());
                     annotation
                             .getAllFields()
                             .forEach((k, v) -> System.out.format("%s : %s%n", k, v.toString()));
@@ -53,6 +56,7 @@ public class DetectLabelsGcs {
             }
         }
         System.out.println("Done");
+        return objects;
     }
 
 
@@ -154,6 +158,7 @@ public class DetectLabelsGcs {
 
                 // For full list of available annotations, see http://g.co/cloud/vision/docs
                 for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
+                    annotation.getDescription();
                     annotation
                             .getAllFields()
                             .forEach((k, v) -> System.out.format("%s : %s%n", k, v.toString()));
