@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: image_detection
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  servlet:
+    multipart:
+      max-request-size: 15MB
+      max-file-size: 15MB
