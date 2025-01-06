@@ -5,12 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Entity;
+import javax.annotation.Nullable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ImageUploadResponse {
-    private String message;
+public class UploadRequestModel {
+    @Nullable
+    private String label;
+    private String image;
+    @Nullable
+    private Boolean enableObjectDetection;
 }
