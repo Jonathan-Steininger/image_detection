@@ -7,7 +7,6 @@ import com.example.image_detection.data.model.UploadRequestModel;
 import com.example.image_detection.util.ImageUtility;
 import com.google.cloud.vision.v1.Image;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +15,14 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProcessingService {
-    private final ImageService imageService;
-    private final ObjectService objectService;
+    private final DetectLabelsService detectLabelsService;
     private final ImageObjectsViewService imageObjectsViewService;
+    private final ImageService imageService;
+    private final ImageUtility imageUtility;
+    private final ObjectService objectService;
 
     public ResponseEntity<ResponseModel> processImageUploadRequest(UploadRequestModel uploadRequestModel) {
         if (uploadRequestModel == null) {
@@ -37,9 +37,9 @@ public class ProcessingService {
         }
 
         try {
-            Image image = ImageUtility.getImageFromSource(uploadRequestModel.getImage());
+            Image image = imageUtility.getImageFromSource(uploadRequestModel.getImage());
             ImageEntity imageEntity = imageService.upload(image, uploadRequestModel);
-            List<String> detectedLabels = DetectLabelsService.detectLabels(image, uploadRequestModel.getEnableObjectDetection());
+            List<String> detectedLabels = detectLabelsService.detectLabels(image, uploadRequestModel.getEnableObjectDetection());
             objectService.saveObjectsForImage(detectedLabels, imageEntity);
             ImageObjectsViewEntity imageObjectsViewEntity = imageObjectsViewService.getImageObjectsViewEntityForImage(imageEntity);
 
@@ -66,6 +66,7 @@ public class ProcessingService {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(ResponseModel.builder().message("imageId is null").build());
         }
+
         try {
             ImageObjectsViewEntity imageObjectsViewEntity = imageObjectsViewService.getImageObjectsViewEntityForImageId(imageId);
 
@@ -107,7 +108,7 @@ public class ProcessingService {
 
     public ResponseEntity<ResponseModel> processGetImagesRequest(String objectsString) {
         try {
-            List<ImageObjectsViewEntity> imageObjectsViewEntities = null;
+            List<ImageObjectsViewEntity> imageObjectsViewEntities;
             if (Strings.isBlank(objectsString)) {
                 imageObjectsViewEntities = imageObjectsViewService.getAllImageObjectsViews();
             } else {

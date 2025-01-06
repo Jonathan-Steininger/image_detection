@@ -1,17 +1,19 @@
 package com.example.image_detection.service;
 
 import com.google.cloud.vision.v1.*;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class DetectLabelsService {
 
     // default number of labels returned by the google api
     private final static int DEFAULT_LABELS_LIST_SIZE = 10;
 
-    public static List<String> detectLabels(Image image, Boolean enableObjectDetection) throws IOException {
+    public List<String> detectLabels(Image image, Boolean enableObjectDetection) throws IOException {
         if (enableObjectDetection == null || Boolean.FALSE.equals(enableObjectDetection)) return null;
         if (image == null) return null;
 

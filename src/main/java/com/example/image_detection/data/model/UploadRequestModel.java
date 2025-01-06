@@ -8,9 +8,9 @@ import lombok.ToString;
 import javax.annotation.Nullable;
 
 @Data
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class UploadRequestModel {
     @Nullable
     private String label;

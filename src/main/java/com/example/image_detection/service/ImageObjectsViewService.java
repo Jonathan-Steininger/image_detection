@@ -4,13 +4,11 @@ import com.example.image_detection.data.entity.ImageEntity;
 import com.example.image_detection.data.entity.ImageObjectsViewEntity;
 import com.example.image_detection.data.repository.ImageObjectsViewRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImageObjectsViewService {

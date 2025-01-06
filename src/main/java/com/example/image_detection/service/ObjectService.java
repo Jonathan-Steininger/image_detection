@@ -4,21 +4,21 @@ import com.example.image_detection.data.entity.ImageEntity;
 import com.example.image_detection.data.entity.ObjectEntity;
 import com.example.image_detection.data.repository.ObjectRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ObjectService {
     private final ObjectRepository objectRepository;
 
+    @Transactional
     public void saveObjectsForImage(List<String> objects, ImageEntity imageEntity) {
         if (CollectionUtils.isEmpty(objects)) return;
         if (imageEntity == null || imageEntity.getId() == null) return;

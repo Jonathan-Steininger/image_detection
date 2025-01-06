@@ -7,12 +7,13 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "object")
+
 @Data
+@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "object")
 public class ObjectEntity {
     @Id
     @Column(name = "id")
