@@ -14,11 +14,6 @@ import java.util.List;
 public class ImageObjectsViewService {
     private final ImageObjectsViewRepository imageObjectsViewRepository;
 
-    public ImageObjectsViewEntity getImageObjectsViewEntityForImage(ImageEntity imageEntity) {
-        if (imageEntity == null || imageEntity.getId() == null) return null;
-        return imageObjectsViewRepository.findById(imageEntity.getId()).orElse(null);
-    }
-
     public ImageObjectsViewEntity getImageObjectsViewEntityForImageId(Long imageId) {
         if (imageId == null) return null;
         return imageObjectsViewRepository.findById(imageId).orElse(null);
@@ -31,5 +26,17 @@ public class ImageObjectsViewService {
 
     public List<ImageObjectsViewEntity> getAllImageObjectsViews() {
         return imageObjectsViewRepository.findAll();
+    }
+
+    public ImageObjectsViewEntity mapImageObjectsViewEntity(ImageEntity imageEntity, List<String> objects) {
+        if (imageEntity == null) return null;
+
+        ImageObjectsViewEntity imageObjectsViewEntity = new ImageObjectsViewEntity();
+        imageObjectsViewEntity.setId(imageEntity.getId());
+        imageObjectsViewEntity.setLabel(imageEntity.getLabel());
+        if (!CollectionUtils.isEmpty(objects)) {
+            imageObjectsViewEntity.setObjects(objects.toArray(new String[0]));
+        }
+        return imageObjectsViewEntity;
     }
 }

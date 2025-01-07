@@ -1,18 +1,12 @@
 package com.example.image_detection.data.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "image")
 public class ImageEntity {
     @Id

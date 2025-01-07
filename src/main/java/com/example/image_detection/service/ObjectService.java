@@ -32,15 +32,15 @@ public class ObjectService {
 
     public List<Long> getImageIdsForGivenObjectNames(String namesString) {
         if (Strings.isBlank(namesString)) return null;
-        String[] names = convertNameStringToArrayAndTrimWhitespace(namesString);
+        String[] names = sanitizeStringInput(namesString);
 
         List<ObjectEntity> objectEntities = objectRepository.findDistinctByNameIn(names);
         return getImageIdsFromObjectEntities(objectEntities);
     }
 
-    private String[] convertNameStringToArrayAndTrimWhitespace(String namesString) {
-        String[] names = namesString.split(",");
-        return Arrays.stream(names).map(String::trim).toArray(unused -> names);
+    private String[] sanitizeStringInput(String namesString) {
+        String[] names = namesString.replace("\"","").split(",");
+        return Arrays.stream(names).map(String::trim).map(String::toLowerCase).toArray(unused -> names);
     }
 
     private List<Long> getImageIdsFromObjectEntities(List<ObjectEntity> objectEntities) {

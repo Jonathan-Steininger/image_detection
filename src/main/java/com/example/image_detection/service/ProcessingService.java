@@ -38,10 +38,11 @@ public class ProcessingService {
 
         try {
             Image image = imageUtility.getImageFromSource(uploadRequestModel.getImage());
-            ImageEntity imageEntity = imageService.upload(image, uploadRequestModel);
             List<String> detectedLabels = detectLabelsService.detectLabels(image, uploadRequestModel.getEnableObjectDetection());
+
+            ImageEntity imageEntity = imageService.upload(image, uploadRequestModel);
             objectService.saveObjectsForImage(detectedLabels, imageEntity);
-            ImageObjectsViewEntity imageObjectsViewEntity = imageObjectsViewService.getImageObjectsViewEntityForImage(imageEntity);
+            ImageObjectsViewEntity imageObjectsViewEntity = imageObjectsViewService.mapImageObjectsViewEntity(imageEntity, detectedLabels);
 
             return ResponseEntity
                     .status(HttpStatus.OK)

@@ -73,7 +73,7 @@ class ProcessingServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(result.getBody()).isNotNull();
-        assertThat(result.getBody().getMessage()).isEqualTo("Upload request is null"); // todo put into constants
+        assertThat(result.getBody().getMessage()).isEqualTo("Upload request is null");
     }
 
     @Test
@@ -106,7 +106,7 @@ class ProcessingServiceTest {
         when(imageUtility.getImageFromSource(uploadRequestModel.getImage())).thenReturn(Image.newBuilder().build());
         when(imageService.upload(any(Image.class), any(UploadRequestModel.class))).thenReturn(new ImageEntity());
         when(detectLabelsService.detectLabels(any(Image.class), any(Boolean.class))).thenReturn(new ArrayList<>());
-        when(imageObjectsViewService.getImageObjectsViewEntityForImage(any(ImageEntity.class))).thenReturn(new ImageObjectsViewEntity());
+        when(imageObjectsViewService.mapImageObjectsViewEntity(any(), any())).thenReturn(new ImageObjectsViewEntity());
 
         ResponseEntity<ResponseModel> result = processingService.processImageUploadRequest(uploadRequestModel);
 
